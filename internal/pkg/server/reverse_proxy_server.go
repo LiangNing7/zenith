@@ -14,6 +14,7 @@ import (
 
 	genericoptions "github.com/LiangNing7/goutils/pkg/options"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/rs/cors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/backoff"
 	"google.golang.org/grpc/credentials"
@@ -71,10 +72,38 @@ func NewGRPCGatewayServer(
 		return nil, err
 	}
 
+	corsHandler := cors.New(cors.Options{
+		AllowedOrigins: []string{
+			"http://localhost:3000",
+			"https://localhost:3000",
+			"http://127.0.0.1:3000",
+			// 生产环境添加你的域名：
+			"https://liangning7.cn",
+		},
+		AllowedMethods: []string{
+			http.MethodGet,
+			http.MethodPost,
+			http.MethodPut,
+			http.MethodDelete,
+			http.MethodOptions,
+		},
+		AllowedHeaders: []string{
+			"Content-Type",
+			"Authorization",
+			"X-Request-ID",
+			"grpc-metadata-*", // 允许 gRPC metadata 头
+		},
+		ExposedHeaders: []string{
+			"X-Request-ID",
+		},
+		AllowCredentials: true,
+		MaxAge:           86400, // 24小时
+	}).Handler(gwmux)
+
 	return &GRPCGatewayServer{
 		srv: &http.Server{
 			Addr:      httpOptions.Addr,
-			Handler:   gwmux,
+			Handler:   corsHandler,
 			TLSConfig: tlsConfig,
 		},
 	}, nil

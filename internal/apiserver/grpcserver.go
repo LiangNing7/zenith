@@ -119,6 +119,8 @@ func NewAuthnWhiteListMatcher() selector.Matcher {
 		apiv1.Zenith_Healthz_FullMethodName:    {},
 		apiv1.Zenith_CreateUser_FullMethodName: {},
 		apiv1.Zenith_Login_FullMethodName:      {},
+		apiv1.Zenith_ListPost_FullMethodName:   {},
+		apiv1.Zenith_GetPost_FullMethodName:    {},
 	}
 	return selector.MatchFunc(func(ctx context.Context, call interceptors.CallMeta) bool {
 		_, ok := whitelist[call.FullMethod()]
@@ -132,6 +134,8 @@ func NewAuthzWhiteListMatcher() selector.Matcher {
 		apiv1.Zenith_Healthz_FullMethodName:    {},
 		apiv1.Zenith_CreateUser_FullMethodName: {},
 		apiv1.Zenith_Login_FullMethodName:      {},
+		apiv1.Zenith_ListPost_FullMethodName:   {},
+		apiv1.Zenith_GetPost_FullMethodName:    {},
 	}
 	return selector.MatchFunc(func(ctx context.Context, call interceptors.CallMeta) bool {
 		_, ok := whitelist[call.FullMethod()]
